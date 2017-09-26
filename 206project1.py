@@ -87,6 +87,18 @@ def findAge(a):
 	#Your code here:
     age = []
     for x in a[1:]:
+        birth_month, birth_day, birth_year = person['DOB'].split('/')
+        today_year = int(datetime.date.today().year)
+        today_month = int(datetime.date.today().month)
+        today_month = int(datetime.date.today().day)
+        if ((today_day>= int(birth_day) and (today_month) >= int(birth_month)):
+            ages.append(today_year - int(birth_year))
+        else:
+            ages.append(today_year - int(birth_year)) + 1)
+        return round((sum(ages) / len(ages)), 0)
+            
+    
+
 
 
 
