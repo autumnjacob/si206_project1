@@ -3,18 +3,22 @@ import filecmp
 import datetime
 
 def getData(file):
-    open_file = open(file, 'r')
-    header = open_file.readlines().strip().split(',')
-    big_data_lst = []
-    for my_data in open_file.readlines():
-        my_dict_data = {}
-        my_index = 0
-        lst_data = my_data.strip().split(',')
-        for key in header:
-            my_dict_data[key] = lst_data[my_index]
-            my_index += 1
-        big_data_lst.append(my_dict_data)
-    return big_data_lst
+
+    opfile = open(file,"r")
+    first=True
+    datalist = []
+    for line in opfile:
+        if first==True:
+            datakeys = line.strip().split(",")
+            first=False
+        else:
+            values=line.strip().split(",")
+            datadic = {}
+            for pos in range(5):
+                datadic[datakeys[pos]] = values[pos]
+            datalist.append(datadic)
+    return datalist
+
 #Input: file name
 #Ouput: return a list of dictionary objects where
 #the keys will come from the first row in the data.
@@ -32,7 +36,7 @@ def mySort(data,col):
 
 	#Your code here:
     sorted_lst = sorted(data, key = lambda x: x[col])
-    return sorted_lst[0]['first'] + '' + sorted_lst[0]['last']
+    return sorted_lst[0]['First'] + ' ' + sorted_lst[0]['Last']
 
 #Create a histogram
 def classSizes(data):
@@ -42,15 +46,15 @@ def classSizes(data):
 # [('Senior', 26), ('Junior', 25), ('Freshman', 21), ('Sophomore', 18)]
 
 	#Your code here:
-    Classes = {'Senior':0, 'Junior':0, 'Freshman':0, 'sophomore': 0}
+    Classes = {'Senior':0, 'Junior':0, 'Freshman':0, 'Sophomore': 0}
     for x in data:
         if x['Class'] == 'Senior':
             Classes['Senior']+= 1
-        elif x[Class] == 'Junior':
+        elif x['Class'] == 'Junior':
             Classes['Junior']+= 1
-        elif x[Class] == 'Freshman':
+        elif x['Class'] == 'Freshman':
             Classes['Freshman']+= 1
-        elif x[Class] == 'Sophomore':
+        elif x['Class'] == 'Sophomore':
             Classes['Sophomore']+= 1
     sorted_Classes = sorted(Classes, key = lambda x:Classes[x],reverse=True)
     Class_Totals = []
@@ -67,15 +71,20 @@ def findDay(a):
 
 	#Your code here:
     days = {}
+    #print(a)
     for x in a:
+        #print(x)
         date = x['DOB'].split('/')
+        #print(date)
         day = date[1]
         if day not in days:
             days[day] = 1
         else:
             days[day] += 1
-        sorted_days = sorted(days, key=lambda x:days[x], reverse=True)
-        return int(sorted_days[0])
+    days_lst = list(days.items())
+    sorted_days = sorted(days_lst, key=lambda x: x[1], reverse= True)
+    return int(sorted_days[0][0])
+
 
 
 # Find the average age (rounded) of the Students
@@ -86,22 +95,17 @@ def findAge(a):
 
 	#Your code here:
     age = []
-    for x in a[1:]:
-        birth_month, birth_day, birth_year = person['DOB'].split('/')
+    for student in a[1:]:
+        birth_month, birth_day, birth_year = student['DOB'].split('/')
         today_year = int(datetime.date.today().year)
         today_month = int(datetime.date.today().month)
-        today_month = int(datetime.date.today().day)
-        if ((today_day>= int(birth_day) and (today_month) >= int(birth_month)):
-            ages.append(today_year - int(birth_year))
+        today_day = int(datetime.date.today().day)
+        if ((today_day >= int(birth_day)) and (today_month) >= int(birth_month)):
+            age.append(today_year - int(birth_year))
         else:
-            ages.append(today_year - int(birth_year)) + 1)
-        return round((sum(ages) / len(ages)), 0)
+            age.append(today_year - int(birth_year) + 1)
+    return round((sum(age) / len(age)), 0)
             
-    
-
-
-
-
 
 #Similar to mySort, but instead of returning single
 #Student, all of the sorted data is saved to a csv file.
@@ -110,7 +114,17 @@ def mySortPrint(a,col,fileName):
 #Output: None
 
 	#Your code here:
-	pass
+    f = open(fileName, "w")
+    sorted_list = sorted(a, key=lambda x: x[col])
+    for person in sorted_list:
+        firstname = person['First']
+        lastname = person['Last']
+        email = person['Email']
+        
+        data = [firstname, lastname, email]
+        
+        f.write(','.join(data) + '\n')
+    f.close()
 
 
 
